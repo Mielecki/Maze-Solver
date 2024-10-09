@@ -1,8 +1,9 @@
 from cell import Cell
 from time import sleep
+import random
 
 class Maze:
-    def __init__(self, x1, y1, num_rows, num_cols, cell_size_x, cell_size_y, window=None):
+    def __init__(self, x1, y1, num_rows, num_cols, cell_size_x, cell_size_y, window=None, seed=None):
         self.x1 = x1
         self.y1 = y1
         self.num_rows = num_rows
@@ -11,6 +12,8 @@ class Maze:
         self.cell_size_y = cell_size_y
         self.window = window
         self.cells = []
+        if seed is not None:
+            seed = random.seed(seed)
         self.create_cells()
         self.break_entrance_and_exit()
 
@@ -43,5 +46,49 @@ class Maze:
     def break_entrance_and_exit(self):
         self.cells[0][0].has_top_wall = False
         self.draw_cell(0, 0)
-        self.cells[self.num_rows-1][self.num_cols-1].has_bottom_wall = False
-        self.draw_cell(self.num_rows-1, self.num_cols-1)
+        self.cells[self.num_cols-1][self.num_rows-1].has_bottom_wall = False
+        self.draw_cell(self.num_cols-1, self.num_rows-1)
+
+    def break_walls(self, i, j, new_i, new_j):
+        if i > new_i:
+            self.cells[i][j].has_left_wall = False
+            self.cell[new_i][new_j].has_right_wall = False
+            self.draw_cell(i, j)
+            self.draw_cell(new_i, new_j)
+        elif i < new_i:
+            self.cells[i][j].has_right_wall = False
+            self.cell[new_i][new_j].has_left_wall = False
+            self.draw_cell(i, j)
+            self.draw_cell(new_i, new_j)
+        elif j > new_j:
+            self.cells[i][j].has_top_wall = False
+            self.cell[new_i][new_j].has_bottom_wall = False
+            self.draw_cell(i, j)
+            self.draw_cell(new_i, new_j)
+        elif j < new_j:
+            self.cells[i][j].has_bottom_wall = False
+            self.cell[new_i][new_j].has_top_wall = False
+            self.draw_cell(i, j)
+            self.draw_cell(new_i, new_j)
+
+    def break_walls_r(self, i, j):
+        self.cells[i][j].visited = True
+        while True:
+            to_visit = []
+            if i > 0 and not self.cells[i-1][j].visited:
+                to_visit.append((i-1, j))
+            if j > 0 and not self.cells[i][j-1].visited:
+                to_visit.append((i, j-1))
+            if i < self.num_cols - 1 and not self.cells[i+1][j].visited:
+                to_visit.append((i+1, j))
+            if j < self.num_rows - 1 and not self.cells[i][j+1].visited:
+                to_visit.append((i, j+1))
+            
+            if not to_visit:
+                return
+            
+            direction = to_visit[random.randrange(0, len(to_visit))]
+            self.break_walls(i, j, *direction)
+            self.break_walls_r(*direction)
+
+             

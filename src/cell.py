@@ -12,6 +12,7 @@ class Cell:
         self.x2 = None
         self.y2 = None
         self.__window = window
+        self.visited = False
     
     def draw(self, x1, y1, x2, y2):
         if not self.__window:
@@ -57,7 +58,3 @@ class Cell:
         color = "grey" if undo else "red"
         if self.__window:
             self.__window.draw_line(connecting_line, color)
-        
-
-    def get_cords(self):
-        return self.x1, self.y1, self.x2, self.y2
