@@ -47,14 +47,17 @@ class Cell:
             self.__window.draw_line(bottom_wall, "white")
 
     def draw_move(self, to_cell, undo=False):
-        wall_length1 = abs(self.x1 - self.x2)//2
+        wall_length1 = abs(self.x1 - self.x2)
         center_point1 = Point(self.x1 + wall_length1//2, self.y1 + wall_length1//2)
 
 
-        wall_length2 = abs(to_cell.x1 - to_cell.x2)//2
+        wall_length2 = abs(to_cell.x1 - to_cell.x2)
         center_point2 = Point(to_cell.x1 + wall_length2//2, to_cell.y1 + wall_length2//2)
 
         connecting_line = Line(center_point1, center_point2)
         color = "grey" if undo else "red"
         if self.__window:
             self.__window.draw_line(connecting_line, color)
+
+    def __repr__(self):
+        return str(self.visited)
